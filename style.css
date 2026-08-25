@@ -17,9 +17,10 @@ a { color:inherit; text-decoration:none; }
 .site-header { height:100px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
 .brand { font-size:13px; letter-spacing:.17em; font-weight:800; white-space:nowrap; }
 .brand span { font-size:18px; letter-spacing:0; margin-right:5px; font-weight:500; }
-.nav { display:flex; gap:36px; margin-left:auto; margin-right:5vw; font-family:'DM Mono', monospace; text-transform:uppercase; font-size:10px; color:var(--muted); }
+.header-actions { display:flex; align-items:center; margin-left:auto; }
+.nav { display:flex; gap:36px; font-family:'DM Mono', monospace; text-transform:uppercase; font-size:10px; color:var(--muted); }
 .nav a, .header-phone { position:relative; transition:color .35s ease; } .nav a::after { content:""; position:absolute; right:0; bottom:-9px; left:0; height:1px; background:var(--red); transform:scaleX(0); transform-origin:right; transition:transform .45s cubic-bezier(.22,1,.36,1); } .nav a:hover, .header-phone:hover { color:var(--white); } .nav a:hover::after { transform:scaleX(1); transform-origin:left; }
-.header-phone { font-family:'DM Mono', monospace; font-size:11px; letter-spacing:.05em; }
+.header-phone { margin-left:72px; font-family:'DM Mono', monospace; font-size:11px; letter-spacing:.05em; }
 .section-grid { display:grid; grid-template-columns: 16% 1fr; }
 .hero { min-height:calc(100vh - 100px); padding:6.5vh 0 8vh; align-items:center; gap:5vw; grid-template-columns:minmax(0, 1.03fr) minmax(320px,.8fr); }
 .hero-media { grid-column:1; grid-row:1; aspect-ratio:4/3; position:relative; overflow:hidden; background:#272a2a; border:1px solid #414445; animation:hero-media-in 1.3s cubic-bezier(.22,1,.36,1) both; }
@@ -70,18 +71,21 @@ h1,h2 { margin:0; font-weight:600; letter-spacing:-.055em; line-height:.98; max-
 	.site-footer p { font-size:12px; }
 }
 
-.text-tools { display:flex; align-items:center; gap:8px; margin-left:28px; }
+.text-tools { display:flex; align-items:center; gap:8px; margin-left:24px; }
 .text-tools-icon { width:18px; color:var(--muted); font:24px/1 Georgia, serif; transform:rotate(-20deg); }
-.text-tools-line { position:relative; width:34px; height:2px; background:var(--line); overflow:hidden; }
+.text-tools-line { position:relative; width:34px; height:2px; background:var(--line); overflow:hidden; transition:width .65s cubic-bezier(.22,1,.36,1); }
 .text-tools-line::after { content:""; position:absolute; inset:0 auto 0 0; width:var(--text-progress, 50%); background:var(--white); transition:width .65s cubic-bezier(.22,1,.36,1); }
+.text-tools:hover .text-tools-line, .text-tools:focus-within .text-tools-line { width:94px; }
 .text-tools:hover .text-tools-line::after, .text-tools:focus-within .text-tools-line::after { width:100%; }
-.text-tools button { width:32px; height:32px; padding:0; border:1px solid var(--line); background:transparent; color:var(--white); cursor:pointer; font:18px/1 'DM Mono', monospace; transition:background .35s cubic-bezier(.22,1,.36,1), color .35s ease, border-color .35s ease, transform .35s cubic-bezier(.22,1,.36,1); }
-.text-tools button:hover, .text-tools button:focus-visible { background:var(--white); border-color:var(--white); color:var(--ink); outline:none; transform:scale(1.08); }
+.text-tools button { width:26px; height:32px; padding:0; border:0; background:transparent; color:var(--white); cursor:pointer; font:20px/1 'DM Mono', monospace; transition:color .35s ease, transform .35s cubic-bezier(.22,1,.36,1); }
+.text-tools button:hover, .text-tools button:focus-visible { color:var(--white); outline:none; transform:scale(1.22); }
 .text-tools button:active { transform:scale(.96); }
 
 @media (max-width:760px) {
-	.text-tools { margin-left:auto; gap:5px; }
+	.header-actions { margin-left:auto; }
+	.text-tools { margin-left:16px; gap:4px; }
 	.text-tools-icon { width:16px; font-size:21px; }
 	.text-tools-line { width:18px; }
-	.text-tools button { width:32px; height:32px; }
+	.text-tools:hover .text-tools-line, .text-tools:focus-within .text-tools-line { width:42px; }
+	.text-tools button { width:28px; height:32px; }
 }
