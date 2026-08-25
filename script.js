@@ -111,14 +111,15 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     }
     const duration = 900;
     let startTime;
+
+    window.cancelAnimationFrame(activeScrollFrame);
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
       const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
       window.scrollTo(0, start + distance * eased);
-      if (progress < 1) window.requestAnimationFrame(step);
+      if (progress < 1) activeScrollFrame = window.requestAnimationFrame(step);
     }
-    window.cancelAnimationFrame(activeScrollFrame);
     activeScrollFrame = window.requestAnimationFrame(step);
   });
 });
@@ -136,7 +137,7 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
 document.querySelectorAll(".reveal").forEach((element, index) => {
   element.style.transitionDelay = `${Math.min(index * 55, 300)}ms`;
   revealObserver.observe(element);
