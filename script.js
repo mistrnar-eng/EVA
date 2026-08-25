@@ -12,6 +12,16 @@ let autoAdvance;
 let activeScrollFrame = null;
 let isSmoothScrolling = false;
 
+function startIntroAnimation() {
+  const introScreen = document.querySelector(".intro-screen");
+  if (!introScreen) return;
+  const exitDelay = reducedMotion ? 500 : 3900;
+  window.setTimeout(() => {
+    introScreen.classList.add("intro-screen-exit");
+    window.setTimeout(() => introScreen.remove(), reducedMotion ? 500 : 1100);
+  }, exitDelay);
+}
+
 function revealSection(target) {
   const section = target.closest("section");
   if (!section) return;
@@ -199,3 +209,4 @@ window.setTimeout(() => {
 
 setContactDetails();
 loadGallery();
+startIntroAnimation();
