@@ -191,5 +191,11 @@ document.querySelectorAll(".reveal").forEach((element, index) => {
 });
 textRevealTargets.forEach((element) => revealObserver.observe(element));
 
+window.setTimeout(() => {
+  document.querySelectorAll(".hero .reveal, .hero .text-reveal").forEach((element) => {
+    element.classList.add("visible");
+  });
+}, 40);
+
 setContactDetails();
 loadGallery();
