@@ -1,3 +1,7 @@
+// ==========================================================================
+// Щоб змінити номер телефону або email — достатньо поміняти значення нижче.
+// Вони автоматично підставляться у всі посилання й написи на сторінці.
+// ==========================================================================
 const CONTACT_PHONE = "+380506410207";
 const CONTACT_EMAIL = "sergey.romanenko@gmail.com";
 
@@ -104,12 +108,12 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     const start = window.scrollY;
     const destination = target.getBoundingClientRect().top + start;
     const distance = destination - start;
-    const duration = reducedMotion ? 0 : 750;
+    const duration = reducedMotion ? 0 : Math.min(1500, Math.max(650, Math.abs(distance) * 0.6));
     let startTime;
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      const eased = 1 - Math.pow(1 - progress, 3);
       window.scrollTo(0, start + distance * eased);
       if (progress < 1) window.requestAnimationFrame(step);
     }
