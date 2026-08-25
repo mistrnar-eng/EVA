@@ -23,11 +23,13 @@ function setTextScale(scale) {
     element.style.fontSize = `${baseSize * safeScale}px`;
   });
   document.documentElement.dataset.textScale = safeScale.toFixed(1);
+  const progress = ((safeScale - 0.7) / (textScaleMax - 0.7)) * 100;
+  document.documentElement.style.setProperty("--text-progress", `${progress}%`);
   window.localStorage.setItem(textScaleStorageKey, safeScale.toFixed(1));
 }
 
 function setupTextSizeControls() {
-  const textTargets = document.querySelectorAll("p, h1, h2, h3, a, button, small, dt, dd, select");
+  const textTargets = document.querySelectorAll("p, h1, h2, h3, a, button, small, dt, dd, select, .brand span");
   textTargets.forEach((element) => {
     if (element.closest(".text-tools")) return;
     element.dataset.textScaleTarget = "";
