@@ -20,6 +20,9 @@ function setContactDetails() {
   document.querySelectorAll("[data-email-text]").forEach((text) => {
     text.textContent = CONTACT_EMAIL;
   });
+  document.querySelectorAll("[data-phone-text]").forEach((text) => {
+    text.textContent = CONTACT_PHONE;
+  });
 }
 
 async function copyPhone(event) {
