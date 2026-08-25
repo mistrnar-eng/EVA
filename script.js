@@ -128,10 +128,12 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12 });
-document.querySelectorAll(".reveal").forEach((element, index) => {
-  element.style.transitionDelay = `${Math.min(index * 55, 300)}ms`;
-  revealObserver.observe(element);
+}, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+document.querySelectorAll(".reveal").forEach((element) => {
+  Array.from(element.children).forEach((child, childIndex) => {
+    child.style.transitionDelay = `${Math.min(childIndex * 130, 480)}ms`;
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => revealObserver.observe(element)));
 });
 
 setContactDetails();
