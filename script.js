@@ -15,10 +15,10 @@ let isSmoothScrolling = false;
 function startIntroAnimation() {
   const introScreen = document.querySelector(".intro-screen");
   if (!introScreen) return;
-  const exitDelay = reducedMotion ? 500 : 3900;
+  const exitDelay = reducedMotion ? 2400 : 5200;
   window.setTimeout(() => {
     introScreen.classList.add("intro-screen-exit");
-    window.setTimeout(() => introScreen.remove(), reducedMotion ? 500 : 1100);
+    window.setTimeout(() => introScreen.remove(), reducedMotion ? 700 : 1300);
   }, exitDelay);
 }
 
