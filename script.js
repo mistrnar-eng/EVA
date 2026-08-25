@@ -11,6 +11,33 @@ let currentImage = 0;
 let autoAdvance;
 let activeScrollFrame = null;
 let isSmoothScrolling = false;
+const textScaleStorageKey = "eva-text-scale";
+const textScaleStep = 0.1;
+const textScaleMin = 0.9;
+const textScaleMax = 1.3;
+
+function setTextScale(scale) {
+  const safeScale = Math.min(textScaleMax, Math.max(textScaleMin, scale));
+  document.querySelectorAll("[data-text-scale-target]").forEach((element) => {
+    const baseSize = Number(element.dataset.baseFontSize);
+    element.style.fontSize = `${baseSize * safeScale}px`;
+  });
+  document.documentElement.dataset.textScale = safeScale.toFixed(1);
+  window.localStorage.setItem(textScaleStorageKey, safeScale.toFixed(1));
+}
+
+function setupTextSizeControls() {
+  const textTargets = document.querySelectorAll("p, h1, h2, h3, a, button, small, dt, dd, select");
+  textTargets.forEach((element) => {
+    if (element.closest(".text-tools")) return;
+    element.dataset.textScaleTarget = "";
+    element.dataset.baseFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+  });
+  const savedScale = Number(window.localStorage.getItem(textScaleStorageKey)) || 1;
+  setTextScale(savedScale);
+  document.querySelector("[data-text-decrease]").addEventListener("click", () => setTextScale(Number(document.documentElement.dataset.textScale) - textScaleStep));
+  document.querySelector("[data-text-increase]").addEventListener("click", () => setTextScale(Number(document.documentElement.dataset.textScale) + textScaleStep));
+}
 
 function startIntroAnimation() {
   const introScreen = document.querySelector(".intro-screen");
@@ -210,3 +237,4 @@ window.setTimeout(() => {
 setContactDetails();
 loadGallery();
 startIntroAnimation();
+setupTextSizeControls();

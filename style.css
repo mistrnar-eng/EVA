@@ -69,3 +69,16 @@ h1,h2 { margin:0; font-weight:600; letter-spacing:-.055em; line-height:.98; max-
 	.contact-copy .form-note { font-size:15px; }
 	.site-footer p { font-size:12px; }
 }
+
+.text-tools { display:flex; align-items:center; gap:8px; margin-left:28px; }
+.text-tools-icon { width:18px; color:var(--muted); font:24px/1 Georgia, serif; transform:rotate(-20deg); }
+.text-tools-line { width:24px; height:1px; background:var(--line); }
+.text-tools button { width:30px; height:30px; padding:0; border:1px solid var(--line); background:transparent; color:var(--white); cursor:pointer; font:18px/1 'DM Mono', monospace; transition:background .35s ease, color .35s ease, border-color .35s ease; }
+.text-tools button:hover, .text-tools button:focus-visible { background:var(--white); border-color:var(--white); color:var(--ink); outline:none; }
+
+@media (max-width:760px) {
+	.text-tools { margin-left:auto; gap:5px; }
+	.text-tools-icon { width:16px; font-size:21px; }
+	.text-tools-line { width:12px; }
+	.text-tools button { width:32px; height:32px; }
+}
