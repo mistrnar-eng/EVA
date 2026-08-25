@@ -9,6 +9,7 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 let availableImages = [];
 let currentImage = 0;
 let autoAdvance;
+let activeScrollFrame;
 
 function setContactDetails() {
   document.querySelectorAll("[data-phone-link]").forEach((link) => {
@@ -104,7 +105,11 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     const start = window.scrollY;
     const destination = target.getBoundingClientRect().top + start;
     const distance = destination - start;
-    const duration = reducedMotion ? 0 : 750;
+    if (reducedMotion) {
+      window.scrollTo(0, destination);
+      return;
+    }
+    const duration = 900;
     let startTime;
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
@@ -113,8 +118,15 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
       window.scrollTo(0, start + distance * eased);
       if (progress < 1) window.requestAnimationFrame(step);
     }
-    window.requestAnimationFrame(step);
+    window.cancelAnimationFrame(activeScrollFrame);
+    activeScrollFrame = window.requestAnimationFrame(step);
   });
+});
+
+const textRevealTargets = document.querySelectorAll(".product-intro > *, .benefit h3, .benefit p, .details-heading > *, .spec-table div, .contact-copy > *, .contact-link");
+textRevealTargets.forEach((element, index) => {
+  element.classList.add("text-reveal");
+  element.style.transitionDelay = `${Math.min((index % 6) * 70, 350)}ms`;
 });
 
 const revealObserver = new IntersectionObserver((entries) => {
@@ -129,6 +141,7 @@ document.querySelectorAll(".reveal").forEach((element, index) => {
   element.style.transitionDelay = `${Math.min(index * 55, 300)}ms`;
   revealObserver.observe(element);
 });
+textRevealTargets.forEach((element) => revealObserver.observe(element));
 
 setContactDetails();
 loadGallery();
