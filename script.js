@@ -23,8 +23,12 @@ function setTextScale(scale) {
     element.style.fontSize = `${baseSize * safeScale}px`;
   });
   document.documentElement.dataset.textScale = safeScale.toFixed(1);
-  const progress = ((safeScale - 0.7) / (textScaleMax - 0.7)) * 100;
-  document.documentElement.style.setProperty("--text-progress", `${progress}%`);
+  const progress = (safeScale - textScaleMin) / (textScaleMax - textScaleMin);
+  const track = document.querySelector(".text-tools-track");
+  const thumbSize = 10;
+  const trackWidth = track ? track.getBoundingClientRect().width : 0;
+  const position = trackWidth ? thumbSize / 2 + progress * (trackWidth - thumbSize) : 0;
+  document.documentElement.style.setProperty("--text-progress", `${position}px`);
   const textRange = document.querySelector("[data-text-range]");
   if (textRange) textRange.value = String(Math.round(safeScale * 100));
   window.localStorage.setItem(textScaleStorageKey, safeScale.toFixed(1));
@@ -42,6 +46,7 @@ function setupTextSizeControls() {
   document.querySelector("[data-text-decrease]").addEventListener("click", () => setTextScale(Number(document.documentElement.dataset.textScale) - textScaleStep));
   document.querySelector("[data-text-increase]").addEventListener("click", () => setTextScale(Number(document.documentElement.dataset.textScale) + textScaleStep));
   document.querySelector("[data-text-range]").addEventListener("input", (event) => setTextScale(Number(event.currentTarget.value) / 100));
+  window.addEventListener("resize", () => setTextScale(Number(document.documentElement.dataset.textScale)));
 }
 
 function startIntroAnimation() {
