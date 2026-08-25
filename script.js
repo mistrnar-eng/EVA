@@ -9,7 +9,8 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 let availableImages = [];
 let currentImage = 0;
 let autoAdvance;
-let activeScrollFrame;
+let activeScrollFrame = null;
+let isSmoothScrolling = false;
 
 function revealSection(target) {
   const section = target.closest("section");
@@ -105,32 +106,69 @@ gallery.addEventListener("keydown", (event) => {
 gallery.addEventListener("mouseenter", () => window.clearInterval(autoAdvance));
 gallery.addEventListener("mouseleave", restartAutoAdvance);
 
+function easeInOutCubic(progress) {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
+
+function stopSmoothScroll() {
+  if (activeScrollFrame !== null) {
+    window.cancelAnimationFrame(activeScrollFrame);
+    activeScrollFrame = null;
+  }
+  isSmoothScrolling = false;
+}
+
+function smoothScrollTo(target) {
+  const startPosition = window.scrollY;
+  const targetPosition = target.getBoundingClientRect().top + startPosition;
+  const distance = targetPosition - startPosition;
+
+  stopSmoothScroll();
+  revealSection(target);
+
+  if (reducedMotion || Math.abs(distance) < 2) {
+    window.scrollTo(0, targetPosition);
+    return;
+  }
+
+  const duration = Math.min(1250, Math.max(650, Math.abs(distance) * 0.55));
+  const startTime = performance.now();
+  isSmoothScrolling = true;
+
+  function animateScroll(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const easedProgress = easeInOutCubic(progress);
+    window.scrollTo(0, startPosition + distance * easedProgress);
+
+    if (progress < 1 && isSmoothScrolling) {
+      activeScrollFrame = window.requestAnimationFrame(animateScroll);
+    } else {
+      activeScrollFrame = null;
+      isSmoothScrolling = false;
+    }
+  }
+
+  activeScrollFrame = window.requestAnimationFrame(animateScroll);
+}
+
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
   link.addEventListener("click", (event) => {
     const target = document.querySelector(link.getAttribute("href"));
     if (!target) return;
     event.preventDefault();
-    const start = window.scrollY;
-    const destination = target.getBoundingClientRect().top + start;
-    const distance = destination - start;
-    if (reducedMotion) {
-      window.scrollTo(0, destination);
-      return;
-    }
-    revealSection(target);
-    const duration = 900;
-    let startTime;
-
-    window.cancelAnimationFrame(activeScrollFrame);
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-      window.scrollTo(0, start + distance * eased);
-      if (progress < 1) activeScrollFrame = window.requestAnimationFrame(step);
-    }
-    activeScrollFrame = window.requestAnimationFrame(step);
+    smoothScrollTo(target);
+    history.replaceState(null, "", link.getAttribute("href"));
   });
+});
+
+["wheel", "touchstart", "keydown"].forEach((eventName) => {
+  window.addEventListener(eventName, (event) => {
+    if (isSmoothScrolling && (eventName !== "keydown" || ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key))) {
+      stopSmoothScroll();
+    }
+  }, { passive: true });
 });
 
 const textRevealTargets = document.querySelectorAll(".product-intro > *, .benefit h3, .benefit p, .details-heading > *, .spec-table div, .contact-copy > *, .contact-link");
