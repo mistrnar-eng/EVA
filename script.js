@@ -11,6 +11,14 @@ let currentImage = 0;
 let autoAdvance;
 let activeScrollFrame;
 
+function revealSection(target) {
+  const section = target.closest("section");
+  if (!section) return;
+  section.querySelectorAll(".reveal, .text-reveal").forEach((element) => {
+    element.classList.add("visible");
+  });
+}
+
 function setContactDetails() {
   document.querySelectorAll("[data-phone-link]").forEach((link) => {
     link.href = `tel:${CONTACT_PHONE}`;
@@ -109,6 +117,7 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
       window.scrollTo(0, destination);
       return;
     }
+    revealSection(target);
     const duration = 900;
     let startTime;
 
